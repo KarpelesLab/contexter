@@ -2,20 +2,38 @@
 
 # Contexter
 
-A dirty piece of code for fetching context.Context from the stack when it
+A dirty piece of code for fetching `context.Context` from the stack when it
 cannot be passed normally.
 
-This can be useful for example when called in a MarshalJSON() method and having
-context information is needed to marshal the object right, but the json package
-provides no way to pass a context.
+## But why?
+
+I turned out to need access to context.Context from a `MarshalJSON()` method
+and found out there is no way to pass it easily. This is one of my attempts
+at passing ctx across the stack.
+
+So if your method that accepts a `context.Context` calls `json.Marshal()`, it
+is likely the `MarshalJSON()` methods will be able to fetch the context using
+`contexter.Context()`.
+
+### My soul doesn't hurt enough
+
+More stack based golang dark magic can be found online:
+
+* https://github.com/jtolio/gls
 
 ## It doesn't work
 
-There can be various reasons why this doesn't work. Either golang inlined the
-function call (in which case parameters are not on the stack), or the variable
-isn't used and go used the memory for something else. This is not an exact
-science, and using this package may result in the end of the world, or your
-program crashing in ways go can't recover. You've been warned.
+There can be various reasons why this doesn't work, or stopped working.
+
+* The method receiving a `context.Context` has been inlined and its parameters aren't available
+* The variable containing the `context.Context` isn't used and was overwritten
+* You're into a different goroutine (which means a new stack)
+* Something changed in Go's runtime, stack display format, etc
+* The architecture you're using does something that's not accounted for in this module
+
+This is not an exact science, and using this package may result in the end of
+the world, or your program crashing in ways go can't recover. You've been
+warned.
 
 # Usage
 
