@@ -14,23 +14,23 @@ provides no way to pass a context.
 There can be various reasons why this doesn't work. Either golang inlined the
 function call (in which case parameters are not on the stack), or the variable
 isn't used and go used the memory for something else. This is not an exact
-science, and using this package may result in the end of the world. You've been
-warned.
+science, and using this package may result in the end of the world, or your
+program crashing in ways go can't recover. You've been warned.
 
 # Usage
 
 ```go
-	ctx := contexter.Context()
+ctx := contexter.Context()
 ```
 
 This will automatically fetch the closest context.Context object found in the
 stack that was passed as a context.Context object, or nil if none were found.
 
 ```go
-	var ctx context.Context
-	if contexter.Find(&ctx) {
-		// use ctx
-	}
+var ctx context.Context
+if contexter.Find(&ctx) {
+	// use ctx
+}
 ```
 
 This alternative version can find other kind of interfaces on the stack.
