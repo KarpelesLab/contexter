@@ -1,3 +1,5 @@
+[![GoDoc](https://godoc.org/github.com/KarpelesLab/contexter?status.svg)](https://godoc.org/github.com/KarpelesLab/contexter)
+
 # Contexter
 
 A dirty piece of code for fetchint context.Context from the stack when it
