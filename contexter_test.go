@@ -2,7 +2,10 @@ package contexter_test
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"log"
+	"runtime"
 	"testing"
 
 	"github.com/KarpelesLab/contexter"
@@ -51,5 +54,40 @@ func TestContext(t *testing.T) {
 
 	if ctx != ctx3 {
 		t.Errorf("invalid value returned in any: %p", ctx3)
+	}
+}
+
+type TestObj struct{}
+
+func (t *TestObj) MarshalJSON() ([]byte, error) {
+	ctx := contexter.Context()
+	if ctx == nil {
+		return nil, errors.New("could not fetch context")
+	}
+
+	res := map[string]interface{}{"foo": ctx.Value("test")}
+	return json.Marshal(res)
+}
+
+//go:noinline
+func encodeJson(ctx context.Context, obj interface{}) ([]byte, error) {
+	res, err := json.Marshal(obj)
+	runtime.KeepAlive(ctx)
+	return res, err
+}
+
+func TestJson(t *testing.T) {
+	ctx := context.WithValue(context.Background(), "test", "bar")
+	obj := &TestObj{}
+
+	val, err := encodeJson(ctx, obj)
+
+	if err != nil {
+		t.Errorf("json test failed: %s", err)
+		return
+	}
+
+	if string(val) != `{"foo":"bar"}` {
+		t.Errorf("json output failed, should be {\"foo\":\"bar\"} but got %s", val)
 	}
 }

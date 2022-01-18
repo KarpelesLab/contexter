@@ -31,12 +31,14 @@ func intfValue(v interface{}) uintptr {
 }
 
 func testPtr(p1, p2 uintptr) context.Context {
-	defer recover()
+	defer func() {
+		recover()
+	}()
 
 	// we expect itab in p1
 	tab := (*itab)(unsafe.Pointer(p1))
 
-	if tab.inter != intfTypeVal {
+	if tab == nil || tab.inter != intfTypeVal {
 		// not a context.Context interface
 		return nil
 	}
@@ -50,7 +52,9 @@ func testPtr(p1, p2 uintptr) context.Context {
 }
 
 func testTab(tab, expect uintptr) bool {
-	defer recover()
+	defer func() {
+		recover()
+	}()
 
 	t := (*itab)(unsafe.Pointer(tab))
 	return t.inter == expect
