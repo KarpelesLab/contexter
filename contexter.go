@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	matchHex    = regexp.MustCompile("[^+]0x([a-fA-F0-9]{2,16}), 0x([a-fA-F0-9]{2,16})")
+	matchHex    = regexp.MustCompile("[^+]0x([a-fA-F0-9]{2,16})\\??, 0x([a-fA-F0-9]{2,16})\\??")
 	intfType    = reflect.TypeOf((*context.Context)(nil)).Elem()
 	intfTypeVal = intfValue(intfType)
 )
