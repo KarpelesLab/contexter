@@ -15,6 +15,10 @@ So if your method that accepts a `context.Context` calls `json.Marshal()`, it
 is likely the `MarshalJSON()` methods will be able to fetch the context using
 `contexter.Context()`.
 
+This said, we now have the [pjson](https://github.com/KarpelesLab/pjson) lib
+that accepts contextes and is able to cleanly pass the context to the encoded
+objects.
+
 ### My soul doesn't hurt enough
 
 More stack based golang dark magic can be found online:
